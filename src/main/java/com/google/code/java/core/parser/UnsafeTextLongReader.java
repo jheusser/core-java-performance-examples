@@ -14,8 +14,8 @@ public class UnsafeTextLongReader implements LongReader {
         long num = 0;
         while (true) {
             byte b = ParserUtils.UNSAFE.getByte(address++);
-            if (b >= '0' && b <= '9')
-//            if ( (b - ('0' + Integer.MIN_VALUE)) <= 9 + Integer.MIN_VALUE)
+//            if (b >= '0' && b <= '9')
+            if ((b - ('0' + Integer.MIN_VALUE)) <= 9 + Integer.MIN_VALUE)
                 num = num * 10 + b - '0';
             else
                 break;
