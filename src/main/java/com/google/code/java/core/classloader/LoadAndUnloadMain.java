@@ -67,6 +67,6 @@ class UtilityClass {
     };
 
     static {
-        System.out.println(ID + " Loading");
+        System.out.println(ID + " Initialising");
     }
 }
