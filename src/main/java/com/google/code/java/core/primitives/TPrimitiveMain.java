@@ -1,27 +1,26 @@
 package com.google.code.java.core.primitives;
 
-import java.util.HashMap;
-import java.util.Map;
+import gnu.trove.TIntIntHashMap;
 
-public class WrapperMain {
+public class TPrimitiveMain {
     public static void main(String... args) throws InterruptedException {
-        Map<Integer, Integer> counters = new HashMap<Integer, Integer>();
+        TIntIntHashMap counters = new TIntIntHashMap();
         while (true) {
             performTest(counters);
             Thread.sleep(100);
         }
     }
 
-    private static void performTest(Map<Integer, Integer> counters) {
+    private static void performTest(TIntIntHashMap counters) {
         counters.clear();
         long start = System.nanoTime();
         int runs = 1000 * 1000;
-        for (Integer i = 0; i < runs; i++) {
-            Integer x = i % 1000;
-            Integer y = i / 1000;
-            Integer times = x * y;
-            Integer count = counters.get(times);
-            if (count == null)
+        for (int i = 0; i < runs; i++) {
+            int x = i % 1000;
+            int y = i / 1000;
+            int times = x * y;
+            int count = counters.get(times);
+            if (count == 0)
                 counters.put(times, 1);
             else
                 counters.put(times, count + 1);

@@ -4,19 +4,20 @@ import gnu.trove.TIntIntHashMap;
 
 public class Primitive2Main {
     public static void main(String... args) throws InterruptedException {
+        TIntIntHashMap counters = new TIntIntHashMap();
         while (true) {
-            performTest();
+            performTest(counters);
             Thread.sleep(100);
         }
     }
 
-    private static void performTest() {
+    private static void performTest(TIntIntHashMap counters) {
+        counters.clear();
         long start = System.nanoTime();
-        TIntIntHashMap counters = new TIntIntHashMap();
-        int runs = 20 * 1000;
+        int runs = 1000 * 1000;
         for (int i = 0; i < runs; i++) {
-            int x = i % 12;
-            int y = i / 12 % 12;
+            int x = i % 1000;
+            int y = i / 1000;
             int times = x * y;
             counters.adjustOrPutValue(times, 1, 1);
         }
