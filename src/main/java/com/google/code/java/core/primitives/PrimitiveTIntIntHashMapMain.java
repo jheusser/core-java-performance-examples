@@ -4,7 +4,7 @@ import gnu.trove.TIntIntHashMap;
 
 import java.io.FileNotFoundException;
 
-public class Primitive2Main {
+public class PrimitiveTIntIntHashMapMain {
     private static final long START = System.currentTimeMillis();
 
     public static void main(String... args) throws InterruptedException, FileNotFoundException {
@@ -16,7 +16,7 @@ public class Primitive2Main {
             performTest(out, counters);
             Thread.sleep(100);
         }
-        out.print("primitive2-report.csv");
+        out.print("primitive-tintinthashmap-report.csv");
     }
 
     private static void performTest(Report out, TIntIntHashMap counters) {
