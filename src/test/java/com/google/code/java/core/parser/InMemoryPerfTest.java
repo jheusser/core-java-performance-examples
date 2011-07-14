@@ -105,6 +105,62 @@ public class InMemoryPerfTest {
     }
 
     @Test
+    public void testByteBufferTextDirectPerf() throws IOException, InterruptedException {
+        doPerf(new PerfTest() {
+            ByteBuffer buffer = ByteBuffer.allocateDirect(1025 * 1024);
+
+            @Override
+            public LongWriter longWriter() {
+                buffer.clear();
+                return new ByteBufferTextLongWriter(buffer);
+            }
+
+            @Override
+            public LongReader longReader() {
+                buffer.flip();
+                return new ByteBufferTextLongReader(buffer);
+            }
+
+            @Override
+            public String toString() {
+                return "ByteBuffer direct text";
+            }
+
+            @Override
+            public void finish() {
+            }
+        });
+    }
+
+    @Test
+    public void testByteBufferTextPerf() throws IOException, InterruptedException {
+        doPerf(new PerfTest() {
+            ByteBuffer buffer = ByteBuffer.allocate(1025 * 1024);
+
+            @Override
+            public LongWriter longWriter() {
+                buffer.clear();
+                return new ByteBufferTextLongWriter(buffer);
+            }
+
+            @Override
+            public LongReader longReader() {
+                buffer.flip();
+                return new ByteBufferTextLongReader(buffer);
+            }
+
+            @Override
+            public String toString() {
+                return "ByteBuffer heap text";
+            }
+
+            @Override
+            public void finish() {
+            }
+        });
+    }
+
+    @Test
     public void testUnsafeTextPerf() throws IOException, InterruptedException {
         doPerf(new PerfTest() {
             final long address = ParserUtils.UNSAFE.allocateMemory(1025 * 1024);

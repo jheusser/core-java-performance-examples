@@ -14,16 +14,16 @@ public class UnsafeTextLongWriter implements LongWriter {
         if (num < 0) {
             if (num == Long.MIN_VALUE) {
                 for (int i = 0; i < MIN_VALUE_TEXT.length; i++) {
-                    ParserUtils.UNSAFE.putLong(address++, MIN_VALUE_TEXT[i]);
+                    ParserUtils.UNSAFE.putByte(address++, MIN_VALUE_TEXT[i]);
                     return;
                 }
             }
-            ParserUtils.UNSAFE.putLong(address++, '-');
+            writeByte('-');
             num = -num;
         }
         if (num == 0) {
-            ParserUtils.UNSAFE.putByte(address++, (byte) '0');
-            ParserUtils.UNSAFE.putByte(address++, (byte) '\n');
+            writeByte('0');
+            writeByte('\n');
         } else if (num < 10000000) {
             int digits = num < 10000 ? num < 100 ? num < 10 ? 1 : 2 : num < 1000 ? 3 : 4 :
                     num < 1000000 ? num < 100000 ? 5 : 6 : num < 10000000 ? 7 : 8;
@@ -44,8 +44,12 @@ public class UnsafeTextLongWriter implements LongWriter {
                 num /= 10;
             }
             address += digits;
-            ParserUtils.UNSAFE.putByte(address++, (byte) '\n');
+            writeByte('\n');
         }
+    }
+
+    private void writeByte(int c) {
+        ParserUtils.UNSAFE.putByte(address++, (byte) c);
     }
 
     private int digits(long l) {
