@@ -38,7 +38,7 @@ public class UnsafeTextLongWriter implements LongWriter {
             ParserUtils.UNSAFE.putLong(address, val);
             address += digits + 1;
         } else {
-            int digits = digits(num / 10000000) + 7;
+            int digits = ParserUtils.digits(num);
             for (int i = digits - 1; i >= 0; i--) {
                 ParserUtils.UNSAFE.putByte(address + i, (byte) (num % 10 + '0'));
                 num /= 10;
@@ -50,15 +50,6 @@ public class UnsafeTextLongWriter implements LongWriter {
 
     private void writeByte(int c) {
         ParserUtils.UNSAFE.putByte(address++, (byte) c);
-    }
-
-    private int digits(long l) {
-        int count = 1;
-        while (l >= 10) {
-            count++;
-            l /= 10;
-        }
-        return count;
     }
 
     @Override

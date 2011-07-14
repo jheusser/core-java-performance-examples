@@ -36,7 +36,8 @@ public class InMemoryPerfTest {
 
             LongReader lr = perfTest.longReader();
             long len2 = lr.read();
-            assertEquals(len, len2);
+            if (len != len2)
+                assertEquals(len, len2);
 
             for (long i = 0; i < len; i++) {
                 lr.read();

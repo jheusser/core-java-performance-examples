@@ -4,7 +4,6 @@ import java.nio.ByteBuffer;
 
 public class ByteBufferTextLongWriter implements LongWriter {
     private static final byte[] MIN_VALUE_TEXT = Long.toString(Long.MIN_VALUE).getBytes();
-
     private final ByteBuffer buffer;
 
     public ByteBufferTextLongWriter(ByteBuffer buffer) {
@@ -25,7 +24,7 @@ public class ByteBufferTextLongWriter implements LongWriter {
             writeByte('0');
             writeByte('\n');
         } else {
-            int digits = digits(num);
+            int digits = ParserUtils.digits(num);
             for (int i = digits - 1; i >= 0; i--) {
                 buffer.put(buffer.position() + i, (byte) (num % 10 + '0'));
                 num /= 10;
@@ -37,15 +36,6 @@ public class ByteBufferTextLongWriter implements LongWriter {
 
     private void writeByte(int c) {
         buffer.put((byte) c);
-    }
-
-    private int digits(long l) {
-        int count = 1;
-        while (l >= 10) {
-            count++;
-            l /= 10;
-        }
-        return count;
     }
 
     @Override
