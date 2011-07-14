@@ -12,15 +12,18 @@ public class UnsafeTextLongReader implements LongReader {
     @Override
     public long read() throws IOException {
         long num = 0;
+        boolean negative = false;
         while (true) {
             byte b = ParserUtils.UNSAFE.getByte(address++);
 //            if (b >= '0' && b <= '9')
             if ((b - ('0' + Integer.MIN_VALUE)) <= 9 + Integer.MIN_VALUE)
                 num = num * 10 + b - '0';
+            else if (b == '-')
+                negative = true;
             else
                 break;
         }
-        return num;
+        return negative ? -num : num;
     }
 
     @Override

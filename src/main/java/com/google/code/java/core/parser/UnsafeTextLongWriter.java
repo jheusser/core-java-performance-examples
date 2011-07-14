@@ -1,6 +1,8 @@
 package com.google.code.java.core.parser;
 
 public class UnsafeTextLongWriter implements LongWriter {
+    private static final byte[] MIN_VALUE_TEXT = Long.toString(Long.MIN_VALUE).getBytes();
+
     private long address;
 
     public UnsafeTextLongWriter(long address) {
@@ -9,6 +11,16 @@ public class UnsafeTextLongWriter implements LongWriter {
 
     @Override
     public void write(long num) {
+        if (num < 0) {
+            if (num == Long.MIN_VALUE) {
+                for (int i = 0; i < MIN_VALUE_TEXT.length; i++) {
+                    ParserUtils.UNSAFE.putLong(address++, MIN_VALUE_TEXT[i]);
+                    return;
+                }
+            }
+            ParserUtils.UNSAFE.putLong(address++, '-');
+            num = -num;
+        }
         if (num == 0) {
             ParserUtils.UNSAFE.putByte(address++, (byte) '0');
             ParserUtils.UNSAFE.putByte(address++, (byte) '\n');
