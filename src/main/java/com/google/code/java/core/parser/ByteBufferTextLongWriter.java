@@ -25,16 +25,16 @@ public class ByteBufferTextLongWriter implements LongWriter {
             writeByte('0');
             writeByte(SEPARATOR);
         } else {
-// find the number of digits
+            // find the number of digits
             int digits = ParserUtils.digits(num);
-// starting from the end, write each digit
+            // starting from the end, write each digit
             for (int i = digits - 1; i >= 0; i--) {
                 // write the lowest digit.
                 buffer.put(buffer.position() + i, (byte) (num % 10 + '0'));
                 // remove that digit.
                 num /= 10;
             }
-// move the position to after the digits.
+            // move the position to after the digits.
             buffer.position(buffer.position() + digits);
             writeByte(SEPARATOR);
         }
