@@ -1,7 +1,5 @@
 package com.google.code.java.core.parser;
 
-import java.io.IOException;
-
 public class UnsafeLongWriter implements LongWriter {
     private long address;
 
@@ -10,7 +8,7 @@ public class UnsafeLongWriter implements LongWriter {
     }
 
     @Override
-    public void write(long num) throws IOException {
+    public void write(long num) {
         ParserUtils.UNSAFE.putLong(address, num);
         address += 8;
     }

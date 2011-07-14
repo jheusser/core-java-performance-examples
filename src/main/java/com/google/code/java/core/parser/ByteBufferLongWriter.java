@@ -1,6 +1,6 @@
 package com.google.code.java.core.parser;
 
-import java.io.IOException;
+import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 
 public class ByteBufferLongWriter implements LongWriter {
@@ -11,7 +11,7 @@ public class ByteBufferLongWriter implements LongWriter {
     }
 
     @Override
-    public void write(long num) throws IOException {
+    public void write(long num) throws BufferOverflowException {
         buffer.putLong(num);
     }
 

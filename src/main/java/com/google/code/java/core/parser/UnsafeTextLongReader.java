@@ -1,7 +1,5 @@
 package com.google.code.java.core.parser;
 
-import java.io.IOException;
-
 public class UnsafeTextLongReader implements LongReader {
     private long address;
 
@@ -10,7 +8,7 @@ public class UnsafeTextLongReader implements LongReader {
     }
 
     @Override
-    public long read() throws IOException {
+    public long read() {
         long num = 0;
         boolean negative = false;
         while (true) {

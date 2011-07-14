@@ -1,6 +1,6 @@
 package com.google.code.java.core.parser;
 
-import java.io.IOException;
+import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 
 public class ByteBufferLongReader implements LongReader {
@@ -11,7 +11,7 @@ public class ByteBufferLongReader implements LongReader {
     }
 
     @Override
-    public long read() throws IOException {
+    public long read() throws BufferUnderflowException {
         return buffer.getLong();
     }
 

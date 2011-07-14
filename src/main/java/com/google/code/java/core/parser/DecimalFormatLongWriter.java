@@ -1,6 +1,5 @@
 package com.google.code.java.core.parser;
 
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
 
@@ -13,7 +12,7 @@ public class DecimalFormatLongWriter implements LongWriter {
     }
 
     @Override
-    public void write(long num) throws IOException {
+    public void write(long num) {
         pw.println(DECIMAL_FORMAT.format(num));
     }
 

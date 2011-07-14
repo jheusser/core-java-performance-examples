@@ -1,5 +1,6 @@
 package com.google.code.java.core.parser;
 
+import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 
 public class ByteBufferTextLongWriter implements LongWriter {
@@ -12,7 +13,7 @@ public class ByteBufferTextLongWriter implements LongWriter {
     }
 
     @Override
-    public void write(long num) {
+    public void write(long num) throws BufferOverflowException {
         if (num < 0) {
             if (num == Long.MIN_VALUE) {
                 buffer.put(MIN_VALUE_TEXT);

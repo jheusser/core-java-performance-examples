@@ -15,10 +15,12 @@ public class DecimalFormatLongReader implements LongReader {
 
     @Override
     public long read() throws IOException {
+        String num = null;
         try {
-            return DECIMAL_FORMAT.parse(br.readLine()).longValue();
+            num = br.readLine();
+            return DECIMAL_FORMAT.parse(num).longValue();
         } catch (ParseException e) {
-            throw new IOException("", e);
+            throw new IOException("Unable to parse '" + num + '\'', e);
         }
     }
 

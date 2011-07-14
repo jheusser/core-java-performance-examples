@@ -11,7 +11,7 @@ public class PrintLongReader implements LongReader {
     }
 
     @Override
-    public long read() throws IOException {
+    public long read() throws IOException, NumberFormatException {
         return Long.parseLong(br.readLine());
     }
 
