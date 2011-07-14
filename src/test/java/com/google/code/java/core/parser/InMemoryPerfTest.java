@@ -22,7 +22,7 @@ public class InMemoryPerfTest {
     public void doPerf(PerfTest perfTest) throws IOException, InterruptedException {
         int runs = 1001;
         long[] times = new long[runs];
-        long len = 128 * 1000;
+        long len = 128 * 1024;
         for (int n = 0; n < runs; n++) {
             Thread.sleep(1);
             long start = System.nanoTime();
@@ -79,7 +79,7 @@ public class InMemoryPerfTest {
     @Test
     public void testByteBufferPerf() throws IOException, InterruptedException {
         doPerf(new PerfTest() {
-            ByteBuffer buffer = ByteBuffer.allocateDirect(1024 * 1024);
+            ByteBuffer buffer = ByteBuffer.allocateDirect(1025 * 1024);
 
             @Override
             public LongWriter longWriter() {
@@ -107,7 +107,7 @@ public class InMemoryPerfTest {
     @Test
     public void testUnsafeTextPerf() throws IOException, InterruptedException {
         doPerf(new PerfTest() {
-            final long address = ParserUtils.UNSAFE.allocateMemory(1024 * 1024);
+            final long address = ParserUtils.UNSAFE.allocateMemory(1025 * 1024);
 
             @Override
             public LongWriter longWriter() {
@@ -181,6 +181,36 @@ public class InMemoryPerfTest {
             @Override
             public String toString() {
                 return "Print text";
+            }
+
+            @Override
+            public void finish() {
+            }
+        });
+    }
+
+    @Test
+    public void testDecimalFormatPerf() throws IOException, InterruptedException {
+        doPerf(new PerfTest() {
+            ByteArrayOutputStream baos;
+
+            @Override
+            public LongWriter longWriter() {
+                baos = new ByteArrayOutputStream();
+                return new DecimalFormatLongWriter(new PrintWriter(new OutputStreamWriter(baos)));
+            }
+
+            @Override
+            public LongReader longReader() {
+                return new DecimalFormatLongReader(
+                        new BufferedReader(
+                                new InputStreamReader(
+                                        new ByteArrayInputStream(baos.toByteArray()))));
+            }
+
+            @Override
+            public String toString() {
+                return "DecimalFormat text";
             }
 
             @Override
