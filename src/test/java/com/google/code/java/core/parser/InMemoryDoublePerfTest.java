@@ -8,11 +8,11 @@ import java.util.Arrays;
 
 import static junit.framework.Assert.assertEquals;
 
-public class InMemoryPerfTest {
+public class InMemoryDoublePerfTest {
     interface PerfTest {
-        LongReader longReader();
+        DoubleReader doubleReader();
 
-        LongWriter longWriter();
+        DoubleWriter doubleWriter();
 
         void finish();
 
@@ -22,24 +22,24 @@ public class InMemoryPerfTest {
     public void doPerf(PerfTest perfTest) throws IOException, InterruptedException {
         int runs = 1001;
         long[] times = new long[runs];
-        long len = 128 * 1024;
+        double len = 128 * 1024;
         for (int n = 0; n < runs; n++) {
             Thread.sleep(1);
             long start = System.nanoTime();
 
-            LongWriter lw = perfTest.longWriter();
+            DoubleWriter lw = perfTest.doubleWriter();
             lw.write(len);
-            for (long i = 0; i < len; i++) {
-                lw.write(i);
+            for (double i = 0; i < len; i++) {
+                lw.write(i * 1000001.0 / 1000000);
             }
             lw.close();
 
-            LongReader lr = perfTest.longReader();
-            long len2 = lr.read();
+            DoubleReader lr = perfTest.doubleReader();
+            double len2 = lr.read();
             if (len != len2)
                 assertEquals(len, len2);
 
-            for (long i = 0; i < len; i++) {
+            for (double i = 0; i < len; i++) {
                 lr.read();
             }
             lr.close();
@@ -47,7 +47,7 @@ public class InMemoryPerfTest {
         }
         perfTest.finish();
         Arrays.sort(times);
-        System.out.printf(perfTest + ": Typically took %.1f ns to write/read per long.%n", (double) times[runs / 2] / len);
+        System.out.printf(perfTest + ": Typically took %.1f ns to write/read per double.%n", (double) times[runs / 2] / len);
     }
 
     @Test
@@ -56,13 +56,13 @@ public class InMemoryPerfTest {
             final long address = ParserUtils.UNSAFE.allocateMemory(1024 * 1024);
 
             @Override
-            public LongWriter longWriter() {
-                return new UnsafeLongWriter(address);
+            public DoubleWriter doubleWriter() {
+                return new UnsafeDoubleWriter(address);
             }
 
             @Override
-            public LongReader longReader() {
-                return new UnsafeLongReader(address);
+            public DoubleReader doubleReader() {
+                return new UnsafeDoubleReader(address);
             }
 
             @Override
@@ -83,15 +83,15 @@ public class InMemoryPerfTest {
             ByteBuffer buffer = ByteBuffer.allocateDirect(1025 * 1024);
 
             @Override
-            public LongWriter longWriter() {
+            public DoubleWriter doubleWriter() {
                 buffer.clear();
-                return new ByteBufferLongWriter(buffer);
+                return new ByteBufferDoubleWriter(buffer);
             }
 
             @Override
-            public LongReader longReader() {
+            public DoubleReader doubleReader() {
                 buffer.flip();
-                return new ByteBufferLongReader(buffer);
+                return new ByteBufferDoubleReader(buffer);
             }
 
             @Override
@@ -108,18 +108,18 @@ public class InMemoryPerfTest {
     @Test
     public void testByteBufferTextDirectPerf() throws IOException, InterruptedException {
         doPerf(new PerfTest() {
-            ByteBuffer buffer = ByteBuffer.allocateDirect(1025 * 1024);
+            ByteBuffer buffer = ByteBuffer.allocateDirect(4 * 1024 * 1024);
 
             @Override
-            public LongWriter longWriter() {
+            public DoubleWriter doubleWriter() {
                 buffer.clear();
-                return new ByteBufferTextLongWriter(buffer);
+                return new ByteBufferTextDoubleWriter(buffer);
             }
 
             @Override
-            public LongReader longReader() {
+            public DoubleReader doubleReader() {
                 buffer.flip();
-                return new ByteBufferTextLongReader(buffer);
+                return new ByteBufferTextDoubleReader(buffer);
             }
 
             @Override
@@ -136,18 +136,19 @@ public class InMemoryPerfTest {
     @Test
     public void testByteBufferTextPerf() throws IOException, InterruptedException {
         doPerf(new PerfTest() {
-            ByteBuffer buffer = ByteBuffer.allocate(1025 * 1024);
+            ByteBuffer buffer = ByteBuffer.allocate(4 * 1024 * 1024);
 
             @Override
-            public LongWriter longWriter() {
+            public DoubleWriter doubleWriter() {
                 buffer.clear();
-                return new ByteBufferTextLongWriter(buffer);
+                return new ByteBufferTextDoubleWriter(buffer);
             }
 
             @Override
-            public LongReader longReader() {
+            public DoubleReader doubleReader() {
+//                System.out.println(new String(buffer.array(), 0, buffer.position()));
                 buffer.flip();
-                return new ByteBufferTextLongReader(buffer);
+                return new ByteBufferTextDoubleReader(buffer);
             }
 
             @Override
@@ -161,19 +162,20 @@ public class InMemoryPerfTest {
         });
     }
 
+/*
     @Test
     public void testUnsafeTextPerf() throws IOException, InterruptedException {
         doPerf(new PerfTest() {
-            final long address = ParserUtils.UNSAFE.allocateMemory(1025 * 1024);
+            final double address = ParserUtils.UNSAFE.allocateMemory(1025 * 1024);
 
             @Override
-            public LongWriter longWriter() {
-                return new UnsafeTextLongWriter(address);
+            public DoubleWriter doubleWriter() {
+                return new UnsafeTextDoubleWriter(address);
             }
 
             @Override
-            public LongReader longReader() {
-                return new UnsafeTextLongReader(address);
+            public DoubleReader doubleReader() {
+                return new UnsafeTextDoubleReader(address);
             }
 
             @Override
@@ -187,6 +189,7 @@ public class InMemoryPerfTest {
             }
         });
     }
+*/
 
     @Test
     public void testDataPerf() throws IOException, InterruptedException {
@@ -194,15 +197,15 @@ public class InMemoryPerfTest {
             ByteArrayOutputStream baos;
 
             @Override
-            public LongWriter longWriter() {
+            public DoubleWriter doubleWriter() {
                 baos = new ByteArrayOutputStream();
-                return new DataLongWriter(baos);
+                return new DataDoubleWriter(baos);
             }
 
             @Override
-            public LongReader longReader() {
+            public DoubleReader doubleReader() {
                 ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-                return new DataLongReader(bais);
+                return new DataDoubleReader(bais);
             }
 
             @Override
@@ -222,14 +225,14 @@ public class InMemoryPerfTest {
             ByteArrayOutputStream baos;
 
             @Override
-            public LongWriter longWriter() {
+            public DoubleWriter doubleWriter() {
                 baos = new ByteArrayOutputStream();
-                return new PrintLongWriter(new PrintWriter(new OutputStreamWriter(baos)));
+                return new PrintDoubleWriter(new PrintWriter(new OutputStreamWriter(baos)));
             }
 
             @Override
-            public LongReader longReader() {
-                return new PrintLongReader(
+            public DoubleReader doubleReader() {
+                return new PrintDoubleReader(
                         new BufferedReader(
                                 new InputStreamReader(
                                         new ByteArrayInputStream(baos.toByteArray()))));
@@ -252,14 +255,14 @@ public class InMemoryPerfTest {
             ByteArrayOutputStream baos;
 
             @Override
-            public LongWriter longWriter() {
+            public DoubleWriter doubleWriter() {
                 baos = new ByteArrayOutputStream();
-                return new DecimalFormatLongWriter(new PrintWriter(new OutputStreamWriter(baos)));
+                return new DecimalFormatDoubleWriter(new PrintWriter(new OutputStreamWriter(baos)));
             }
 
             @Override
-            public LongReader longReader() {
-                return new DecimalFormatLongReader(
+            public DoubleReader doubleReader() {
+                return new DecimalFormatDoubleReader(
                         new BufferedReader(
                                 new InputStreamReader(
                                         new ByteArrayInputStream(baos.toByteArray()))));
