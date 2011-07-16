@@ -12,12 +12,12 @@ public class SizeofUtilTest {
     @Test
     public void testAverageBytes() throws Exception {
         assertEquals(4.0, new SizeofUtil() {
-            int[] ints;
+            int[] array;
 
             @Override
             protected int create() {
-                ints = new int[1024];
-                return ints.length;
+                array = new int[1024];
+                return array.length;
             }
         }.averageBytes(), 0.02);
 
@@ -34,44 +34,59 @@ public class SizeofUtilTest {
 
     @Test
     public void testHeaderSize() {
+        final int factor = 1;
         System.out.printf("The average size of an Integer is %.1f bytes%n", new SizeofUtil() {
-            Integer[] ints = new Integer[128 * 1024];
+            Integer obj = null;
 
             @Override
             protected int create() {
-                for (int i = 0; i < ints.length; i++)
-                    ints[i] = new Integer(i);
-                return ints.length;
+                obj = new Integer(1);
+                return 1;
             }
         }.averageBytes());
-        System.out.printf("The average size of an Long is %.1f bytes%n", new SizeofUtil() {
-            Long[] ints = new Long[128 * 1024];
+        System.out.printf("The average size of a Long is %.1f bytes%n", new SizeofUtil() {
+            Long obj = null;
 
             @Override
             protected int create() {
-                for (int i = 0; i < ints.length; i++)
-                    ints[i] = new Long(i);
-                return ints.length;
+                obj = new Long(1);
+                return 1;
             }
         }.averageBytes());
         System.out.printf("The average size of an AtomicReference is %.1f bytes%n", new SizeofUtil() {
-            AtomicReference[] ints = new AtomicReference[128 * 1024];
+            AtomicReference obj = null;
 
             @Override
             protected int create() {
-                for (int i = 0; i < ints.length; i++)
-                    ints[i] = new AtomicReference(null);
-                return ints.length;
+                obj = new AtomicReference();
+                return 1;
             }
         }.averageBytes());
-        System.out.printf("The average size of an Calendar is %.1f bytes%n", new SizeofUtil() {
-            Calendar[] ints = new Calendar[1024];
+        System.out.printf("The average size of a Calendar is %.1f bytes%n", new SizeofUtil() {
+            Calendar obj = null;
 
             @Override
             protected int create() {
-                for (int i = 0; i < ints.length; i++)
-                    ints[i] = Calendar.getInstance();
-                return ints.length;
+                obj = Calendar.getInstance();
+                return 1;
+            }
+        }.averageBytes());
+        System.out.printf("The average size of an Exception is %.1f bytes%n", new SizeofUtil() {
+            Exception obj = null;
+
+            @Override
+            protected int create() {
+                obj = new Exception("" + System.currentTimeMillis());
+                return 1;
+            }
+        }.averageBytes());
+        System.out.printf("The average size of a bit in a BitSet is %.3f bytes%n", new SizeofUtil() {
+            BitSet obj = null;
+
+            @Override
+            protected int create() {
+                obj = new BitSet(128 * 1024);
+                return obj.size();
             }
         }.averageBytes());
     }
