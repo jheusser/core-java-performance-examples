@@ -43,6 +43,15 @@ public class SizeofUtilTest {
                 return obj.length;
             }
         }.averageBytes());
+        System.out.printf("The average size of an Object is %.1f bytes%n", new SizeofUtil() {
+            Object obj = null;
+
+            @Override
+            protected int create() {
+                obj = new Object();
+                return 1;
+            }
+        }.averageBytes());
         System.out.printf("The average size of an Integer is %.1f bytes%n", new SizeofUtil() {
             Integer obj = null;
 
