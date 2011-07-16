@@ -34,7 +34,15 @@ public class SizeofUtilTest {
 
     @Test
     public void testHeaderSize() {
-        final int factor = 1;
+        System.out.printf("The average size of an int is %.1f bytes%n", new SizeofUtil() {
+            int[] obj = null;
+
+            @Override
+            protected int create() {
+                obj = new int[1024];
+                return obj.length;
+            }
+        }.averageBytes());
         System.out.printf("The average size of an Integer is %.1f bytes%n", new SizeofUtil() {
             Integer obj = null;
 
