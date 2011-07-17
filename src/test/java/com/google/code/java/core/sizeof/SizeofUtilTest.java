@@ -2,6 +2,7 @@ package com.google.code.java.core.sizeof;
 
 import org.junit.Test;
 
+import java.util.AbstractMap;
 import java.util.BitSet;
 import java.util.Calendar;
 import java.util.concurrent.atomic.AtomicReference;
@@ -76,6 +77,15 @@ public class SizeofUtilTest {
             @Override
             protected int create() {
                 obj = new AtomicReference();
+                return 1;
+            }
+        }.averageBytes());
+        System.out.printf("The average size of an SimpleEntry(Map.Entry) is %.1f bytes%n", new SizeofUtil() {
+            AbstractMap.SimpleEntry obj = null;
+
+            @Override
+            protected int create() {
+                obj = new AbstractMap.SimpleEntry(null, null);
                 return 1;
             }
         }.averageBytes());
