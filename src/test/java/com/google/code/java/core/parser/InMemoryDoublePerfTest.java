@@ -162,6 +162,35 @@ public class InMemoryDoublePerfTest {
         });
     }
 
+    @Test
+    public void testByteBufferFixedPerf() throws IOException, InterruptedException {
+        doPerf(new PerfTest() {
+            ByteBuffer buffer = ByteBuffer.allocate(2 * 1024 * 1024);
+
+            @Override
+            public DoubleWriter doubleWriter() {
+                buffer.clear();
+                return new ByteBufferFixedWriter(buffer, 9);
+            }
+
+            @Override
+            public DoubleReader doubleReader() {
+//                System.out.println(new String(buffer.array(), 0, buffer.position()));
+                buffer.flip();
+                return new ByteBufferTextDoubleReader(buffer);
+            }
+
+            @Override
+            public String toString() {
+                return "ByteBuffer heap text";
+            }
+
+            @Override
+            public void finish() {
+            }
+        });
+    }
+
 /*
     @Test
     public void testUnsafeTextPerf() throws IOException, InterruptedException {

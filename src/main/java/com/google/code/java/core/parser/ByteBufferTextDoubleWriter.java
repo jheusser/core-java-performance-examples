@@ -5,12 +5,12 @@ import java.nio.ByteBuffer;
 
 public class ByteBufferTextDoubleWriter implements DoubleWriter {
     private static final long MAX_VALUE_DIVIDE_5 = Long.MAX_VALUE / 5;
-    private static final char SEPARATOR = '\n';
+    protected static final char SEPARATOR = '\n';
     private static final long MAX_DECIMALS = 1L << 53;
     private static final byte[] Infinity = "Infinity".getBytes();
     private static final byte[] NaN = "NaN".getBytes();
 
-    private final ByteBuffer buffer;
+    protected final ByteBuffer buffer;
 
     public ByteBufferTextDoubleWriter(ByteBuffer buffer) {
         this.buffer = buffer;
@@ -141,7 +141,7 @@ public class ByteBufferTextDoubleWriter implements DoubleWriter {
         return;
     }
 
-    private void writeLong(long val2) {
+    protected void writeLong(long val2) {
         int digits = ParserUtils.digits(val2);
         // starting from the end, write each digit
         for (int i = digits - 1; i >= 0; i--) {
@@ -155,7 +155,7 @@ public class ByteBufferTextDoubleWriter implements DoubleWriter {
         buffer.position(buffer.position() + digits);
     }
 
-    private void writeByte(long c) {
+    protected void writeByte(long c) {
         buffer.put((byte) c);
     }
 

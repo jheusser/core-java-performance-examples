@@ -13,7 +13,7 @@ public class ByteBufferTextDoubleReader implements DoubleReader {
     }
 
     static double asDouble(long value, int exp, boolean negative, int decimalPlaces) {
-        if (value < Long.MAX_VALUE / 2) {
+        if (decimalPlaces > 0 && value < Long.MAX_VALUE / 2) {
             if (value < Long.MAX_VALUE / (1L << 32)) {
                 exp -= 32;
                 value <<= 32;

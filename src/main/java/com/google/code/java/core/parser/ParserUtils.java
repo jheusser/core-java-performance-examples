@@ -9,7 +9,7 @@ import java.util.Arrays;
 
 public enum ParserUtils {
     ;
-    private static final long[] TENS = new long[19];
+    static final long[] TENS = new long[19];
 
     static {
         TENS[0] = 1;

@@ -4,7 +4,7 @@ import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 
 public class ByteBufferDoubleWriter implements DoubleWriter {
-    private final ByteBuffer buffer;
+    protected final ByteBuffer buffer;
 
     public ByteBufferDoubleWriter(ByteBuffer buffer) {
         this.buffer = buffer;
