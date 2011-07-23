@@ -1,5 +1,6 @@
 package com.google.code.java.core.sizeof;
 
+import org.joda.time.DateTime;
 import org.junit.Test;
 
 import java.util.AbstractMap;
@@ -86,6 +87,15 @@ public class SizeofUtilTest {
             @Override
             protected int create() {
                 obj = new AbstractMap.SimpleEntry(null, null);
+                return 1;
+            }
+        }.averageBytes());
+        System.out.printf("The average size of a DateTime is %.1f bytes%n", new SizeofUtil() {
+            DateTime obj = null;
+
+            @Override
+            protected int create() {
+                obj = new DateTime();
                 return 1;
             }
         }.averageBytes());
