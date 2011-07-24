@@ -2,11 +2,14 @@ package com.google.code.java.core.sizeof;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.LinkedList;
 
 public class MemoryUsageExamplesTest {
     @Test
     public void testStringPlus() {
+
         System.out.printf("The average memory used by StringBuilder for \"abc\" + \"def\" is %.1f bytes%n", new SizeofUtil() {
             @Override
             protected int create() {
@@ -59,6 +62,22 @@ public class MemoryUsageExamplesTest {
                 return 1;
             }
         }.averageBytes());
+        System.out.printf("The average memory used by new ArrayList<Boolean>(1024) is %.1f bytes%n", new SizeofUtil() {
+            @Override
+            protected int create() {
+                ArrayList<Boolean> array = new ArrayList<Boolean>(1024);
+                for (int i = 0; i < 1024; i++) array.add(i, i % 2 == 0);
+                return 1;
+            }
+        }.averageBytes());
+        System.out.printf("The average memory used by new LinkedList<Boolean>() with 1024 elements is %.1f bytes%n", new SizeofUtil() {
+            @Override
+            protected int create() {
+                LinkedList<Boolean> array = new LinkedList<Boolean>();
+                for (int i = 0; i < 1024; i++) array.add(i, i % 2 == 0);
+                return 1;
+            }
+        }.averageBytes());
         System.out.printf("The average memory used by byte[1024] is %.1f bytes%n", new SizeofUtil() {
             @Override
             protected int create() {
@@ -72,6 +91,22 @@ public class MemoryUsageExamplesTest {
             protected int create() {
                 Byte[] array = new Byte[1024];
                 for (int i = 0; i < array.length; i++) array[i] = (byte) i;
+                return 1;
+            }
+        }.averageBytes());
+        System.out.printf("The average memory used by new ArrayList<Byte>(1024) is %.1f bytes%n", new SizeofUtil() {
+            @Override
+            protected int create() {
+                ArrayList<Byte> array = new ArrayList<Byte>(1024);
+                for (int i = 0; i < 1024; i++) array.add(i, (byte) i);
+                return 1;
+            }
+        }.averageBytes());
+        System.out.printf("The average memory used by new LinkedList<Byte>() with 1024 elements is %.1f bytes%n", new SizeofUtil() {
+            @Override
+            protected int create() {
+                LinkedList<Byte> array = new LinkedList<Byte>();
+                for (int i = 0; i < 1024; i++) array.add(i, (byte) i);
                 return 1;
             }
         }.averageBytes());
@@ -107,6 +142,22 @@ public class MemoryUsageExamplesTest {
                 return 1;
             }
         }.averageBytes());
+        System.out.printf("The average memory used by new ArrayList<Short/Character>(1024) is %.1f bytes%n", new SizeofUtil() {
+            @Override
+            protected int create() {
+                ArrayList<Short> array = new ArrayList<Short>(1024);
+                for (int i = 0; i < 1024; i++) array.add(i, (short) i);
+                return 1;
+            }
+        }.averageBytes());
+        System.out.printf("The average memory used by new LinkedList<Short/Character>() with 1024 elements is %.1f bytes%n", new SizeofUtil() {
+            @Override
+            protected int create() {
+                LinkedList<Short> array = new LinkedList<Short>();
+                for (int i = 0; i < 1024; i++) array.add(i, (short) i);
+                return 1;
+            }
+        }.averageBytes());
         System.out.printf("The average memory used by int[1024] is %.1f bytes%n", new SizeofUtil() {
             @Override
             protected int create() {
@@ -120,6 +171,22 @@ public class MemoryUsageExamplesTest {
             protected int create() {
                 Integer[] ints = new Integer[1024];
                 for (int i = 0; i < ints.length; i++) ints[i] = i;
+                return 1;
+            }
+        }.averageBytes());
+        System.out.printf("The average memory used by new ArrayList<Integer/Float>(1024) is %.1f bytes%n", new SizeofUtil() {
+            @Override
+            protected int create() {
+                ArrayList<Integer> array = new ArrayList<Integer>(1024);
+                for (int i = 0; i < 1024; i++) array.add(i, (int) i);
+                return 1;
+            }
+        }.averageBytes());
+        System.out.printf("The average memory used by new LinkedList<Integer/Float>() with 1024 elements is %.1f bytes%n", new SizeofUtil() {
+            @Override
+            protected int create() {
+                LinkedList<Integer> array = new LinkedList<Integer>();
+                for (int i = 0; i < 1024; i++) array.add(i, (int) i);
                 return 1;
             }
         }.averageBytes());
@@ -155,6 +222,22 @@ public class MemoryUsageExamplesTest {
                 return 1;
             }
         }.averageBytes());
+        System.out.printf("The average memory used by new ArrayList<Long/Double>(1024) is %.1f bytes%n", new SizeofUtil() {
+            @Override
+            protected int create() {
+                ArrayList<Long> array = new ArrayList<Long>(1024);
+                for (int i = 0; i < 1024; i++) array.add(i, (long) i);
+                return 1;
+            }
+        }.averageBytes());
+        System.out.printf("The average memory used by new LinkedList<Long/Double>() with 1024 elements is %.1f bytes%n", new SizeofUtil() {
+            @Override
+            protected int create() {
+                LinkedList<Long> array = new LinkedList<Long>();
+                for (int i = 0; i < 1024; i++) array.add(i, (long) i);
+                return 1;
+            }
+        }.averageBytes());
         System.out.printf("The average memory used by double[1024] is %.1f bytes%n", new SizeofUtil() {
             @Override
             protected int create() {
@@ -176,6 +259,22 @@ public class MemoryUsageExamplesTest {
             protected int create() {
                 String[] array = new String[1024];
                 for (int i = 0; i < array.length; i++) array[i] = String.valueOf(i);
+                return 1;
+            }
+        }.averageBytes());
+        System.out.printf("The average memory used by new ArrayList<String>(1024) is %.1f bytes%n", new SizeofUtil() {
+            @Override
+            protected int create() {
+                ArrayList<String> array = new ArrayList<String>(1024);
+                for (int i = 0; i < 1024; i++) array.add(i, String.valueOf(i));
+                return 1;
+            }
+        }.averageBytes());
+        System.out.printf("The average memory used by new LinkedList<String>() with 1024 elements is %.1f bytes%n", new SizeofUtil() {
+            @Override
+            protected int create() {
+                LinkedList<String> array = new LinkedList<String>();
+                for (int i = 0; i < 1024; i++) array.add(i, String.valueOf(i));
                 return 1;
             }
         }.averageBytes());
