@@ -35,7 +35,7 @@ public abstract class SizeofUtil {
     }
 
     protected int runs() {
-        return 5;
+        return 11;
     }
 
     protected abstract int create();
