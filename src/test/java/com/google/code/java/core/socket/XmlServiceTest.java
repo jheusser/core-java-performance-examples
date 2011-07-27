@@ -25,9 +25,9 @@ public class XmlServiceTest {
     public void xmlServiceRoundTrip() throws IOException {
         HeartbeatServer hs = new HeartbeatServer(9999);
         hs.start();
-        int runs = 1000 * 1000;
+        int runs = 3 * 1000 * 1000;
 
-        final AtomicInteger count = new AtomicInteger(-10000);
+        final AtomicInteger count = new AtomicInteger();
         final long[] times = new long[runs];
         EventListener el = new EventListener() {
             @Override
@@ -38,8 +38,7 @@ public class XmlServiceTest {
             @Override
             public void heartbeatResponse(long timestamp, long sequenceNumber) {
                 int n = count.getAndIncrement();
-                if (n >= 0)
-                    times[n] = System.nanoTime() - sequenceNumber;
+                times[n] = System.nanoTime() - sequenceNumber;
             }
 
             @Override
@@ -50,7 +49,7 @@ public class XmlServiceTest {
         SocketChannel sc = SocketChannel.open(new InetSocketAddress(9999));
         ByteBuffer wb = ByteBuffer.allocateDirect(4 * 1024);
         XmlEventParser xep = new XmlEventParser();
-        for (int i = -10000; i < runs; i += 2) {
+        for (int i = 0; i < runs; i += 2) {
             writeHeartbeatRequest(sc, wb, System.nanoTime());
             writeHeartbeatRequest(sc, wb, System.nanoTime());
             ByteBuffer rb = xep.bufferForWriting(128);
@@ -77,7 +76,7 @@ public class XmlServiceTest {
     public void xmlServiceThroughput() throws IOException {
         HeartbeatServer hs = new HeartbeatServer(9999);
         hs.start();
-        int runs = 1000 * 1000;
+        int runs = 3 * 1000 * 1000;
 
         final AtomicInteger count = new AtomicInteger();
         EventListener el = new EventListener() {
