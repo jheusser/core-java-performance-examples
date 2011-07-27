@@ -84,8 +84,6 @@ public class SizeOfMapsTest {
                 return new WeakHashMap<Integer, Long>(capacity * 4 / 3);
             }
         });
-
-
     }
 
     interface Builder<T> {
