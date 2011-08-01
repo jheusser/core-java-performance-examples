@@ -1,4 +1,4 @@
-package com.google.code.java.core.file;
+package com.google.code.java.core.files;
 
 import org.junit.Test;
 
