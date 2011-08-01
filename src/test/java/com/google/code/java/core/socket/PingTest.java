@@ -5,6 +5,7 @@ import org.junit.Test;
 import java.io.Closeable;
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.nio.channels.ClosedByInterruptException;
 import java.nio.channels.ClosedChannelException;
@@ -20,6 +21,7 @@ public class PingTest {
 
         SocketChannel sc = SocketChannel.open(new InetSocketAddress("localhost", 9999));
         SocketChannel sc2 = ssc.accept();
+        configure(sc2);
         close(ssc);
 
         ByteBuffer bb = ByteBuffer.allocateDirect(4096);
@@ -62,7 +64,9 @@ public class PingTest {
         ssc.socket().bind(new InetSocketAddress("localhost", 9999));
 
         SocketChannel sc = SocketChannel.open(new InetSocketAddress("localhost", 9999));
+        configure(sc);
         SocketChannel sc2 = ssc.accept();
+        configure(sc2);
         close(ssc);
 
         ByteBuffer bb = ByteBuffer.allocateDirect(4096);
@@ -99,6 +103,7 @@ public class PingTest {
                 SocketChannel sc2 = null;
                 try {
                     sc2 = ssc.accept();
+                    configure(sc2);
                     sc2.configureBlocking(false);
                     close(ssc);
                     ByteBuffer bb2 = ByteBuffer.allocateDirect(4096);
@@ -121,6 +126,7 @@ public class PingTest {
         });
         server.start();
         SocketChannel sc = SocketChannel.open(new InetSocketAddress("localhost", 9999));
+        configure(sc);
         ByteBuffer bb = ByteBuffer.allocateDirect(4096);
         long times[] = new long[1000 * 1000];
         for (int i = -10000; i < times.length; i++) {
@@ -159,6 +165,7 @@ public class PingTest {
                 SocketChannel sc2 = null;
                 try {
                     sc2 = ssc.accept();
+                    configure(sc2);
                     close(ssc);
                     ByteBuffer bb2 = ByteBuffer.allocateDirect(4096);
                     while (!Thread.interrupted()) {
@@ -178,6 +185,7 @@ public class PingTest {
         });
         server.start();
         SocketChannel sc = SocketChannel.open(new InetSocketAddress("localhost", 9999));
+        configure(sc);
 
         ByteBuffer bb = ByteBuffer.allocateDirect(4096);
 
@@ -202,11 +210,15 @@ public class PingTest {
         System.out.printf("Threaded Socket Throughput was %,d K/s%n", runs * 1000000L / time);
     }
 
-
-    private static void close(Closeable sc2) {
+    static void close(Closeable sc2) {
         if (sc2 != null) try {
             sc2.close();
         } catch (IOException ignored) {
         }
+    }
+
+
+    static void configure(SocketChannel sc) throws SocketException {
+        sc.socket().setTcpNoDelay(true);
     }
 }
