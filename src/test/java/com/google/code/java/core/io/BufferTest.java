@@ -68,7 +68,8 @@ public class BufferTest {
         long time4 = (System.nanoTime() - start4) / count4;
 
         long factor = 16 * 1000 * 1000 * 1000L; // 16 MB/ns in MB/s
-        System.out.printf("<tr><td align=\">%,d</td><td align=\"right\">%,d MB/s"
+        System.out.printf("<tr><td align=\"right\">%,d"
+                + "</td><td align=\"right\">%,d MB/s"
                 + "</td><td align=\"right\">%,d MB/s"
                 + "</td><td align=\"right\">%,d MB/s"
                 + "</td><td align=\"right\">%,d MB/s"
