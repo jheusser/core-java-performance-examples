@@ -11,7 +11,7 @@ public class RoundingPerformanceMain {
 
     private static double longCastPerf() {
         double sum = 0; // to avoid micro-optimisation.
-        final int runs = 10 * 1000 * 1000;
+        final int runs = 160 * 1000 * 1000; // about 1 second.
         long start = System.nanoTime();
         for (int i = 0; i < runs; i++) {
             double d = i * 0.01;
@@ -24,7 +24,7 @@ public class RoundingPerformanceMain {
 
     private static double mathRoundPerf() {
         double sum = 0; // to avoid micro-optimisation.
-        final int runs = 10 * 1000 * 1000;
+        final int runs = 50 * 1000 * 1000; // about one second.
         long start = System.nanoTime();
         for (int i = 0; i < runs; i++) {
             double d = i * 0.01;
@@ -37,7 +37,7 @@ public class RoundingPerformanceMain {
 
     private static double bidDecimalSetScalePerf() {
         double sum = 0; // to avoid micro-optimisation.
-        final int runs = 1000 * 1000;
+        final int runs = 1000 * 1000;  // about 1 second.
         long start = System.nanoTime();
         for (int i = 0; i < runs; i++) {
             double d = i * 0.01;
