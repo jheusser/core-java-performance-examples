@@ -12,7 +12,7 @@
 
 using namespace std;
 
-#define length (16LL * 1000 * 1000 * 1000)
+#define length (64LL * 1024 * 1024 * 1024)
 
 double diff(timeval a, timeval b) {
     return a.tv_sec - b.tv_sec + (a.tv_usec - b.tv_usec) / 1e6;
@@ -195,9 +195,9 @@ void timeLongUnrolledTest() {
  * 
  */
 int main(int argc, char** argv) {
-    timeBytesTest();
-    timeBytesUnrolledTest();
-    timeLongTest();
+//    timeBytesTest();
+//    timeBytesUnrolledTest();
+//    timeLongTest();
     timeLongUnrolledTest();
     return 0;
 }

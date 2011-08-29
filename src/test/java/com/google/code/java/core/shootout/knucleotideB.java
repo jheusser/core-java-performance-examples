@@ -1,17 +1,20 @@
 package com.google.code.java.core.shootout;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
+import java.lang.management.ManagementFactory;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.concurrent.*;
 
-public class Knucleotide4 {
-  static final int A = 0, T = 1, C = 2, G = 3, N = 4;
+public class knucleotideB {
+  static final int A = 0, T = 1, C = 2, G = 3;
   static final long MASK18 = (1L << (2 * 18)) - 1;
 
-  static byte[] values = new byte[128]; static {
+  static byte[] values = new byte[256]; static {
     Arrays.fill(values, (byte) -1);
     values['A'] = values['a'] = A;
     values['T'] = values['t'] = T;
@@ -32,18 +35,20 @@ public class Knucleotide4 {
   static final long GGTATTTTAATT = encode("GGTATTTTAATT");
   static final long GGTATTTTAATTTATAGT = encode("GGTATTTTAATTTATAGT");
 
-  static final int BUFFER_REUSE = 24; // bytes. The min is 18-1+1.
-  static int nThreads = 1; //Runtime.getRuntime().availableProcessors();
+  static final int BUFFER_REUSE = 32; // bytes. The min is 18-1+1.
+  static int nThreads = 4; //Runtime.getRuntime().availableProcessors();
 
   public static void main(String... args) throws IOException, InterruptedException {
     long start = System.nanoTime();
-    InputStream in = args.length == 0 ? System.in : new FileInputStream(args[0]);
-    byte[] bufferReuse = new byte[BUFFER_REUSE];
+    FileInputStream in = args.length == 0 ? openStdin() : new FileInputStream(args[0]);
+    final FileChannel fc = in.getChannel();
+    ByteBuffer bb = fc.map(FileChannel.MapMode.READ_ONLY, 0, fc.size());
     ExecutorService es = Executors.newFixedThreadPool(nThreads);
-    searchForThree(in, bufferReuse, es);
+    searchForThree(bb, es);
     int len;
     long mid = System.nanoTime();
 
+/*
     Task task = Task.FREE_LIST.take();
     while ((len = in.read(task.bytes, BUFFER_REUSE, Task.BUFFER_SIZE - BUFFER_REUSE)) > 0) {
       System.arraycopy(bufferReuse, 0, task.bytes, 0, BUFFER_REUSE);
@@ -53,40 +58,42 @@ public class Knucleotide4 {
       System.arraycopy(task.bytes, len, bufferReuse, 0, BUFFER_REUSE);
       task = Task.FREE_LIST.take();
     }
+*/
     in.close();
     es.shutdown();
     es.awaitTermination(1, TimeUnit.MINUTES);
     Results.report();
     long end = System.nanoTime();
-    System.out.printf("1) Took %.3f second to run%n", (mid - start) / 1e9);
-    System.out.printf("2) Took %.3f second to run%n", (end - mid) / 1e9);
+    System.out.printf("1) Took %.3f second to find THREE from stdin%n", (mid - start) / 1e9);
+    System.out.printf("2) Took %.3f second to count nucleotides%n", (end - mid) / 1e9);
   }
 
-  private static void searchForThree(InputStream in, byte[] bufferReuse, ExecutorService es) throws InterruptedException, IOException {
+  private static FileInputStream openStdin() throws FileNotFoundException {
+    int processId = Integer.parseInt(ManagementFactory.getRuntimeMXBean().getName().split("@")[0]);
+    return new FileInputStream("/proc/" + processId + "/fd/0");
+  }
+
+  private static void searchForThree(ByteBuffer bb, ExecutorService es) throws InterruptedException, IOException {
     Task task = Task.FREE_LIST.take();
-    byte[] b = task.bytes;
-    int len, i = 0;
+    int i;
     OUTER:
-    while ((len = in.read(b)) > 0)
-      for (i = 0; i < len - 5; i++)
-        if (b[i] == 'T' && b[i + 1] == 'H' && b[i + 2] == 'R' && b[i + 3] == 'E' && b[i + 4] == 'E')
-          break OUTER;
-    while (b[++i] != '\n') ;
+    for (i = 0; i < bb.limit(); i++)
+      if (bb.get(i) == '>' && bb.get(i + 1) == 'T' && bb.get(i + 2) == 'H' && bb.get(i + 3) == 'R' && bb.get(i + 4) == 'E' && bb.get(i + 5) == 'E')
+        break OUTER;
+    while (bb.get(++i) != '\n') ;
     task.start = i - BUFFER_REUSE;
-    task.end = len;
+    task.end = bb.limit();
     es.submit(task);
-    System.arraycopy(b, len - BUFFER_REUSE, bufferReuse, 0, BUFFER_REUSE);
   }
 
   static class Task implements Runnable {
-    static final int BUFFER_SIZE = 512 * 1024;
     static final ArrayBlockingQueue<Task> FREE_LIST = new ArrayBlockingQueue<Task>(nThreads + 1);
 
     static {
       for (int i = 0; i <= nThreads; i++) FREE_LIST.add(new Task());
     }
 
-    byte[] bytes = new byte[BUFFER_SIZE];
+    ByteBuffer bytes;
     int start, end;
 
     @Override
@@ -102,7 +109,7 @@ public class Knucleotide4 {
     static final int KEY_SIZE = 2 * 18;
     static final long COUNT_BASE = 1L << KEY_SIZE;
     static final long KEY_MASK = COUNT_BASE - 1;
-    final long[] keys = new long[LEN];
+    final long[] keyValues = new long[LEN];
     static final Set<Results> ALL_RESULTS = new CopyOnWriteArraySet<Results>();
     static final ThreadLocal<Results> LOCAL_RESULTS = new ThreadLocal<Results>() {
       @Override
@@ -124,11 +131,11 @@ public class Knucleotide4 {
 
     private boolean tryIncrement(long id, long id2) {
       int hash = (int) ((id2 + (id2 >>> 17)) & (LEN - 1));
-      long key = keys[hash];
+      long key = keyValues[hash];
       if (key == 0) {
-        keys[hash] = id | COUNT_BASE;
+        keyValues[hash] = id | COUNT_BASE;
       } else if ((key & KEY_MASK) == id) {
-        keys[hash] += COUNT_BASE;
+        keyValues[hash] += COUNT_BASE;
       } else {
         return true;
       }
@@ -140,7 +147,7 @@ public class Knucleotide4 {
       int[] count2s = new int[4 * 4];
       int[] ggtCounts = new int[5];
       for (Results results : ALL_RESULTS)
-        for (long key1 : results.keys) {
+        for (long key1 : results.keyValues) {
           if (key1 == 0) continue;
           final long key = key1 & KEY_MASK;
           final int value = (int) (key1 >>> KEY_SIZE);
@@ -166,15 +173,15 @@ public class Knucleotide4 {
       }
     }
 
-    public void process(byte[] bytes, int start, int end) {
+    public void process(ByteBuffer bb, int start, int end) {
       long l = 0;
       for (int i = start; i < start + BUFFER_REUSE; i++) {
-        int b = values[bytes[i]];
+        int b = values[bb.get(i)];
         if (b < 0) continue;
         l = (l << 2) | b;
       }
       for (int i = start + BUFFER_REUSE; i < end; i++) {
-        int b = values[bytes[i]];
+        int b = values[bb.get(i)];
         if (b < 0) continue;
         l = (l << 2) | b;
         increment(l & MASK18);

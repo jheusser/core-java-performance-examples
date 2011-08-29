@@ -1,5 +1,3 @@
-package com.google.code.java.core.shootout;
-
 /* The Computer Language Benchmarks Game
    http://shootout.alioth.debian.org/
 
@@ -44,8 +42,8 @@ public class knucleotide {
   static int nThreads = 4; //Runtime.getRuntime().availableProcessors();
 
   public static void main(String... args) throws Exception {
-    long start = System.nanoTime();
-    FileInputStream in = args.length == 0 ? openStdin() : new FileInputStream(args[0]);
+    String processId = ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
+    FileInputStream in = new FileInputStream("/proc/" + processId + "/fd/0");
     ExecutorService es = Executors.newFixedThreadPool(nThreads - 1);
     FileChannel fc = in.getChannel();
     ByteBuffer bb = fc.map(FileChannel.MapMode.READ_ONLY, 0, fc.size());
@@ -75,13 +73,6 @@ public class knucleotide {
     es.shutdown();
     es.awaitTermination(1, TimeUnit.MINUTES);
     Results.report();
-    long end = System.nanoTime();
-    System.out.printf("%nTook %.3f second to count nucleotides%n", (end - start) / 1e9);
-  }
-
-  private static FileInputStream openStdin() throws Exception {
-    int processId = Integer.parseInt(ManagementFactory.getRuntimeMXBean().getName().split("@")[0]);
-    return new FileInputStream("/proc/" + processId + "/fd/0");
   }
 
   private static int findStartOfThree(ByteBuffer bb, ExecutorService es, int nThreads) throws InterruptedException {

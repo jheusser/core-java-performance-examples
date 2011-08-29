@@ -39,28 +39,28 @@ class fasta {
   public static byte[] ALUB = ALU.getBytes();
 
   public static final frequency[] IUB = new frequency[]{
-      new frequency('a', 0.27),
-      new frequency('c', 0.12),
-      new frequency('g', 0.12),
-      new frequency('t', 0.27),
+                                                           new frequency('a', 0.27),
+                                                           new frequency('c', 0.12),
+                                                           new frequency('g', 0.12),
+                                                           new frequency('t', 0.27),
 
-      new frequency('B', 0.02),
-      new frequency('D', 0.02),
-      new frequency('H', 0.02),
-      new frequency('K', 0.02),
-      new frequency('M', 0.02),
-      new frequency('N', 0.02),
-      new frequency('R', 0.02),
-      new frequency('S', 0.02),
-      new frequency('V', 0.02),
-      new frequency('W', 0.02),
-      new frequency('Y', 0.02)};
+                                                           new frequency('B', 0.02),
+                                                           new frequency('D', 0.02),
+                                                           new frequency('H', 0.02),
+                                                           new frequency('K', 0.02),
+                                                           new frequency('M', 0.02),
+                                                           new frequency('N', 0.02),
+                                                           new frequency('R', 0.02),
+                                                           new frequency('S', 0.02),
+                                                           new frequency('V', 0.02),
+                                                           new frequency('W', 0.02),
+                                                           new frequency('Y', 0.02)};
 
   public static final frequency[] HomoSapiens = new frequency[]{
-      new frequency('a', 0.3029549426680d),
-      new frequency('c', 0.1979883004921d),
-      new frequency('g', 0.1975473066391d),
-      new frequency('t', 0.3015094502008d)};
+                                                                   new frequency('a', 0.3029549426680d),
+                                                                   new frequency('c', 0.1979883004921d),
+                                                                   new frequency('g', 0.1975473066391d),
+                                                                   new frequency('t', 0.3015094502008d)};
 
   public static void makeCumulative(frequency[] a) {
     double cp = 0.0;
@@ -137,7 +137,7 @@ class fasta {
     int n = 2500000;
     if (args.length > 0)
       n = Integer.parseInt(args[0]);
-    OutputStream out = new BufferedOutputStream(new FileOutputStream("fasta.txt"));
+    OutputStream out = new BufferedOutputStream(new FileOutputStream("/tmp/fasta.txt"));
     makeRepeatFasta("ONE", "Homo sapiens alu", ALU, n * 2, out);
     makeRandomFasta("TWO", "IUB ambiguity codes", IUB, n * 3, out);
     makeRandomFasta("THREE", "Homo sapiens frequency", HomoSapiens, n * 5, out);
