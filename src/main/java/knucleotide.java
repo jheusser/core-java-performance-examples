@@ -39,7 +39,7 @@ public class knucleotide {
   static final long GGTATTTTAATT = encode("GGTATTTTAATT");
   static final long GGTATTTTAATTTATAGT = encode("GGTATTTTAATTTATAGT");
 
-  static int nThreads = 4; //Runtime.getRuntime().availableProcessors();
+  static int nThreads = Runtime.getRuntime().availableProcessors();
 
   public static void main(String... args) throws Exception {
     String processId = ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
@@ -81,7 +81,11 @@ public class knucleotide {
     for (int i = 0; i < nThreads; i++) {
       final int min = i * blockSize;
       final int max = min + blockSize;
-      es.submit(new FindThreeRunnable(bb, startOfThree, min, max));
+      final FindThreeRunnable task = new FindThreeRunnable(bb, startOfThree, min, max);
+      if (i == nThreads - 1)
+        task.run();
+      else
+        es.submit(task);
     }
     return startOfThree.take();
   }
