@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2011.  Peter Lawrey
+ *
+ * "THE BEER-WARE LICENSE" (Revision 128)
+ * As long as you retain this notice you can do whatever you want with this stuff.
+ * If we meet some day, and you think this stuff is worth it, you can buy me a beer in return
+ * There is no warranty.
+ */
+
 /* The Computer Language Benchmarks Game
    http://shootout.alioth.debian.org/
 
@@ -16,6 +25,7 @@ public class knucleotide {
   static final String ATCG = "ATCG";
   static final int A = 0, T = 1, C = 2, G = 3;
   static final int LONGEST_SEARCH = 18;
+  public static final int WARMUP = LONGEST_SEARCH + 2;
   static final long MASK18 = (1L << (2 * LONGEST_SEARCH)) - 1;
 
   static byte[] values = new byte[256]; static {
@@ -55,12 +65,13 @@ public class knucleotide {
       int min = startFrom + i * blockSize;
       int max = min + blockSize;
       bb.limit(Math.min(max, bb.capacity()));
-      bb.position(min - LONGEST_SEARCH);
+      bb.position(min - WARMUP);
       final ByteBuffer bb3 = bb.slice().order(ByteOrder.nativeOrder());
+      final boolean warmup = i > 0;
       final Runnable task = new Runnable() {
         @Override
         public void run() {
-          new Results().process(bb3, 0, bb3.limit());
+          new Results().process(bb3, 0, bb3.limit(), warmup);
         }
       };
       if (i < nThreads - 1)
@@ -72,7 +83,7 @@ public class knucleotide {
     in.close();
     es.shutdown();
     es.awaitTermination(1, TimeUnit.MINUTES);
-    Results.report();
+    Results.report((char) bb.get(startFrom));
   }
 
   private static int findStartOfThree(ByteBuffer bb, ExecutorService es, int nThreads) throws InterruptedException {
@@ -122,7 +133,7 @@ public class knucleotide {
       return false;
     }
 
-    public static void report() {
+    public static void report(char firstLetter) {
       int[] count1s = new int[4];
       int[] count2s = new int[4 * 4];
       int[] ggtCounts = new int[5];
@@ -140,6 +151,8 @@ public class knucleotide {
           if ((key & ((1 << 2 * 12) - 1)) == GGTATTTTAATT) ggtCounts[3] += value;
           if (key == GGTATTTTAATTTATAGT) ggtCounts[4] += value;
         }
+      // first letter is counted incorrectly as a pair when there was no previous letter.
+      count2s[((int) encode("A" + firstLetter))]--;
       long sum = 0;
       SortedMap<Integer, Integer> singles = new TreeMap<Integer, Integer>(Collections.<Object>reverseOrder());
       for (int i = 0, count1sLength = count1s.length; i < count1sLength; i++) {
@@ -157,17 +170,19 @@ public class knucleotide {
       System.out.println();
       String[] names = "GGT GGTA GGTATT GGTATTTTAATT GGTATTTTAATTTATAGT".split(" ");
       for (int i = 0; i < ggtCounts.length; i++)
-        System.out.printf("%-7d %s%n", ggtCounts[i], names[i]);
+        System.out.printf("%d\t%s%n", ggtCounts[i], names[i]);
     }
 
-    public void process(ByteBuffer bytes, int start, int end) {
+    public void process(ByteBuffer bytes, int start, int end, boolean warmup) {
       long l = 0;
-      for (int i = start; i < start + LONGEST_SEARCH; i++) {
-        int b = values[bytes.get(i)];
-        if (b < 0) continue;
-        l = (l << 2) | b;
-      }
-      for (int i = start + LONGEST_SEARCH; i < end; i++) {
+      if (warmup)
+        for (int i = start; i < start + WARMUP; i++) {
+          int b = values[bytes.get(i)];
+          if (b < 0) continue;
+          l = (l << 2) | b;
+        }
+
+      for (int i = start + WARMUP; i < end; i++) {
         int b = values[bytes.get(i)];
         if (b < 0) continue;
         l = (l << 2) | b;

@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2011.  Peter Lawrey
+  ~
+  ~ "THE BEER-WARE LICENSE" (Revision 128)
+  ~ As long as you retain this notice you can do whatever you want with this stuff.
+  ~ If we meet some day, and you think this stuff is worth it, you can buy me a beer in return
+  ~ There is no warranty.
+  -->
+
 <project xmlns="http://www.netbeans.org/ns/project/1">
     <type>org.netbeans.modules.cnd.makeproject</type>
     <configuration>
