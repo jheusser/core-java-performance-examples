@@ -13,7 +13,6 @@ import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 
 public class ByteBufferTextDoubleReader implements DoubleReader {
-  public static final long MAX_VALUE_DIVIDE_5 = Long.MAX_VALUE / 5;
   public static final long MAX_VALUE_DIVIDE_10 = Long.MAX_VALUE / 10;
   private final ByteBuffer buffer;
 
