@@ -23,8 +23,8 @@ public class OrdersOfHashSet {
     Collection<String> elements = Arrays.asList("zero, one, two, three, four, five, six, seven, eight, nine, ten".split(", "));
 
     try {
-      for (int i = 16; i > 0; i *= 2) {
-        Set<String> set = new HashSet<String>(i);
+      for (int i = 1; i > 0; i *= 2) {
+        Set<String> set = new HashSet<String>(i, 100);
         set.addAll(elements);
         String str = set.toString();
         if (order.add(str))
