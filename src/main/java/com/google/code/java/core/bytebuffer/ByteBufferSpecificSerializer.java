@@ -1,6 +1,7 @@
 package com.google.code.java.core.bytebuffer;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 /**
  * @author peter.lawrey
@@ -16,7 +17,8 @@ public class ByteBufferSpecificSerializer /*implements ObjectSerializer<MediaCon
     final MediaContent created = new MediaContent();
     final MediaContent deserialized = new MediaContent();
 
-    final ByteBuffer bb = ByteBuffer.allocateDirect(4 * 1024);
+    final ByteBuffer bb = ByteBuffer.allocateDirect(4 * 1024).order(ByteOrder.nativeOrder());
+    byte[] cachedBytes = {};
 
     public MediaContent deserialize(byte[] array) throws Exception {
         bb.clear();
@@ -32,7 +34,8 @@ public class ByteBufferSpecificSerializer /*implements ObjectSerializer<MediaCon
         bb.clear();
         content.writeTo(bb);
         bb.flip();
-        byte[] bytes = new byte[bb.remaining()];
+        // if you use NIO, a byte[] isn't required.
+        byte[] bytes = bb.remaining() == cachedBytes.length ? cachedBytes : (cachedBytes = new byte[bb.remaining()]);
         bb.get(bytes);
         return bytes;
     }
