@@ -38,7 +38,7 @@ public class ByteBufferSpecificSerializer /*implements ObjectSerializer<MediaCon
     }
 
     public String getName() {
-        return "ByteBuffer Specific Serializer";
+        return "ByteBuffer-specific";
     }
 
     public MediaContent create() throws Exception {
