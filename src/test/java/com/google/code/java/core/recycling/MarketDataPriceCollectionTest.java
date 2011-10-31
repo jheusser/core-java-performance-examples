@@ -42,7 +42,7 @@ public class MarketDataPriceCollectionTest {
         final MarketDataPriceCollection recycled = new MarketDataPriceCollection();
         for (int i = -warmup; i < testCount; i++) {
             doRecycleDeserialize(bb, i, recycleTime, recycleCache, recycled);
-            doNewObjectDeserialize(bb, i, newObjectTime, newObjectCache);
+//            doNewObjectDeserialize(bb, i, newObjectTime, newObjectCache);
         }
         Arrays.sort(recycleTime);
         Arrays.sort(recycleCache);
