@@ -4,8 +4,8 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-import static serializers.bytebuffer.ByteBuffers.readInt;
-import static serializers.bytebuffer.ByteBuffers.write;
+import static com.google.code.java.core.bytebuffer.ByteBuffers.readInt;
+import static com.google.code.java.core.bytebuffer.ByteBuffers.write;
 
 public class MediaContent {
     private final List<Image> _images = new ArrayList<Image>();

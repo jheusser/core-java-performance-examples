@@ -4,7 +4,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-import static serializers.bytebuffer.ByteBuffers.*;
+import static com.google.code.java.core.bytebuffer.ByteBuffers.*;
 
 public class Media {
     public enum Player {
