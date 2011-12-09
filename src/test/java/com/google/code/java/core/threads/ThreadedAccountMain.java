@@ -1,9 +1,6 @@
 package com.google.code.java.core.threads;
 
-import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @author peter.lawrey
@@ -20,22 +17,20 @@ public class ThreadedAccountMain {
                 transfer(accounts[i + 1], accounts[i], 11);
             }
             long time = System.nanoTime() - start;
-            System.out.printf("Took an average of %,d ns to transfer money with a lock on each Account.%n", time / accountCount);
+            System.out.printf("Took an average of %.1f ns to transfer money with a synchronized on each Account.%n", (double) time / accountCount);
         }
     }
 
     private static void transfer(Account from, Account to, int amount) {
-        Account[] as = {from, to};
-        Arrays.sort(as);
-        try {
-            as[0].lock().lock();
-            as[1].lock().lock();
-            if (from.balance() < amount) throw new IllegalArgumentException();
-            from.transfer(-amount);
-            to.transfer(amount);
-        } finally {
-            as[0].lock().unlock();
-            as[1].lock().unlock();
+        boolean comp = from.compareTo(to) <= 0;
+        Object firstLock = comp ? from.lock() : to.lock();
+        Object secondLock = comp ? to.lock() : from.lock();
+        synchronized (firstLock) {
+            synchronized (secondLock) {
+                if (from.balance() < amount) throw new IllegalArgumentException();
+                from.transfer(-amount);
+                to.transfer(amount);
+            }
         }
     }
 
@@ -43,14 +38,15 @@ public class ThreadedAccountMain {
     static class Account implements Comparable<Account> {
         private static final AtomicLong IDS = new AtomicLong();
         private final long id = IDS.getAndIncrement();
-        private final Lock lock = new ReentrantLock();
+        private final Object lock = new Object();
+
         private long balance;
 
         public Account(long balance) {
             this.balance = balance;
         }
 
-        public Lock lock() {
+        public Object lock() {
             return lock;
         }
 

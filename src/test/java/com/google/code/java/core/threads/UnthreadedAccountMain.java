@@ -17,7 +17,7 @@ public class UnthreadedAccountMain {
                 transfer(accounts[i + 1], accounts[i], 11);
             }
             long time = System.nanoTime() - start;
-            System.out.printf("Took an average of %,d ns to transfer money, single threaded%n", time / accountCount);
+            System.out.printf("Took an average of %.1f ns to transfer money, single threaded%n", (double) time / accountCount);
         }
     }
 
