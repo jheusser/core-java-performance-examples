@@ -41,7 +41,7 @@ public class ThreadedAccountMain {
 
 
     static class Account implements Comparable<Account> {
-        private final AtomicLong IDS = new AtomicLong();
+        private static final AtomicLong IDS = new AtomicLong();
         private final long id = IDS.getAndIncrement();
         private final Lock lock = new ReentrantLock();
         private long balance;

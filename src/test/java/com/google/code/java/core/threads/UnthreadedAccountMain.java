@@ -1,5 +1,7 @@
 package com.google.code.java.core.threads;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 /**
  * @author peter.lawrey
  */
@@ -26,7 +28,10 @@ public class UnthreadedAccountMain {
     }
 
 
-    static class Account {
+    static class Account implements Comparable<Account> {
+        private static final AtomicLong IDS = new AtomicLong();
+        private final long id = IDS.getAndIncrement();
+
         private long balance;
 
         public Account(long balance) {
@@ -40,6 +45,11 @@ public class UnthreadedAccountMain {
         public void transfer(long delta) {
             if (delta + balance < 0) throw new IllegalStateException();
             balance += delta;
+        }
+
+        @Override
+        public int compareTo(Account o) {
+            return id > o.id ? +1 : -1;
         }
     }
 }
