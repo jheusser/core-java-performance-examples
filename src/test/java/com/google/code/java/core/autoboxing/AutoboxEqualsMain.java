@@ -140,26 +140,18 @@ public class AutoboxEqualsMain {
     private static void findAutoBoxedFloat() {
         Float f1 = 0.0f;
         Float f2 = 0.0f;
-        if (System.identityHashCode(f1) == System.identityHashCode(f2)) {
-            if (f1 == f2)
-                System.out.println("No Float are cached.");
-            else
-                System.out.println("Some Float are cached.");
-        } else {
-            System.out.println("Java uses comparison of values for Float, and == is true if the values are the same but the objects are different.");
-        }
+        if (f1 == f2)
+            System.out.println("Some Float are cached.");
+        else
+            System.out.println("No Float are cached.");
     }
 
     private static void findAutoBoxedDouble() {
         Double f1 = 0.0;
         Double f2 = 0.0;
-        if (System.identityHashCode(f1) == System.identityHashCode(f2)) {
-            if (f1 == f2)
-                System.out.println("No Double are cached.");
-            else
-                System.out.println("Some Double are cached.");
-        } else {
-            System.out.println("Java uses comparison of values for Double, and == is true if the values are the same but the objects are different.");
-        }
+        if (f1 == f2)
+            System.out.println("Some Double are cached.");
+        else
+            System.out.println("No Double are cached.");
     }
 }
