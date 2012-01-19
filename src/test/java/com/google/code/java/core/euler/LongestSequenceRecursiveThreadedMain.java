@@ -26,18 +26,16 @@ public class LongestSequenceRecursiveThreadedMain {
             es.submit(new Runnable() {
                 @Override
                 public void run() {
-                    int localLongest = 0;
                     long i;
                     for (i = 1 + 2 * finalT; length[0] < minLength; i += 2 * processors) {
                         int length2 = getSequenceLength(i);
-                        if (length2 > localLongest) {
+                        if (length2 > length[0]) {
                             synchronized (length) {
-                                if (length2 > length[0]) {
+                                if (length[0] < minLength && length2 > length[0]) {
                                     length[0] = length2;
                                     longest[0] = i;
-                                    System.out.println(length[0] + ": " + longest[0]);
+//                                    System.out.println(length[0] + ": " + longest[0]);
                                 }
-                                localLongest = length[0];
                             }
                         }
                     }
@@ -48,7 +46,7 @@ public class LongestSequenceRecursiveThreadedMain {
                             if (length2 > minLength && i < longest[0]) {
                                 length[0] = length2;
                                 longest[0] = i;
-                                System.out.println(length[0] + ": " + longest[0]);
+//                                System.out.println(length[0] + ": " + longest[0]);
                             }
                         }
                     }
@@ -64,7 +62,7 @@ public class LongestSequenceRecursiveThreadedMain {
         return new long[]{length[0], longest[0]};
     }
 
-    private static final short[] SEQUENCE_LENGTH_CACHE = new short[1600 * 1000 * 1000];
+    private static final short[] SEQUENCE_LENGTH_CACHE = new short[1400 * 1000 * 1000];
 
     private static int getSequenceLength(long n) {
         long i = n;

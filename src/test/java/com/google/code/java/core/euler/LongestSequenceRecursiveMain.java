@@ -15,7 +15,7 @@ public class LongestSequenceRecursiveMain {
     private static long[] findLongestSequence(int minLength) {
         int length = 0;
         long longest = 0;
-        for (long i = 1; length < minLength; i += 2) {
+        for (long i = 1; length < minLength; i += 1) {
             int length2 = getSequenceLength(i);
             if (length2 > length) {
                 length = length2;
