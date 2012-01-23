@@ -4,7 +4,7 @@ package com.google.code.java.core.threads;
  * @author peter.lawrey
  */
 public class RequiresVolatileMain {
-    static volatile boolean value;
+    static boolean value;
 
     public static void main(String... args) {
         new Thread(new MyRunnable(true), "Sets true").start();
