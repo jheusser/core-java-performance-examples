@@ -4,11 +4,11 @@ package com.google.code.java.core.threads;
  * @author peter.lawrey
  */
 public class RequiresVolatileMain {
-    static boolean value;
+    static volatile boolean value;
 
     public static void main(String... args) {
-        new Thread(new MyRunnable(true)).start();
-        new Thread(new MyRunnable(false)).start();
+        new Thread(new MyRunnable(true), "Sets true").start();
+        new Thread(new MyRunnable(false), "Sets false").start();
     }
 
     private static class MyRunnable implements Runnable {
@@ -23,13 +23,13 @@ public class RequiresVolatileMain {
             int count = 0;
             boolean logged = false;
             while (true) {
-                if (value == target) {
-                    value = !value;
+                if (value != target) {
+                    value = target;
                     count = 0;
                     if (!logged)
                         System.out.println(Thread.currentThread().getName() + ": reset value=" + value);
                 } else if (++count % 1000000000 == 0) {
-                    System.out.println(Thread.currentThread().getName() + ": value=" + value);
+                    System.out.println(Thread.currentThread().getName() + ": value=" + value + " target=" + target);
                     logged = true;
                 }
             }
