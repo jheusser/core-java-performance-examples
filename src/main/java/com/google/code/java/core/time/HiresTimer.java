@@ -36,7 +36,7 @@ public enum HiresTimer {
 
     public static long currentTimeUS() {
         long now = System.currentTimeMillis() * 1000;
-        long nowUS = (System.nanoTime() + 500) / 100 + s_deltaUS;
+        long nowUS = (System.nanoTime() + 500) / 1000 + s_deltaUS;
         if (nowUS < now) {
             s_deltaUS++;
             return now;

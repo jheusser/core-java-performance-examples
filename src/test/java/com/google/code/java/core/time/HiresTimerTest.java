@@ -21,7 +21,14 @@ import static junit.framework.Assert.assertEquals;
 public class HiresTimerTest {
     @Test
     public void testCurrentTimeUS() throws Exception {
-
+        int count = 0;
+        for (int i = 0; i < 100; i++) {
+            final long timeUS = HiresTimer.currentTimeUS();
+            System.out.println(HiresTimer.toString(timeUS));
+            if (timeUS % 1000 == 0)
+                count++;
+        }
+        assertEquals(1, count, 1);
     }
 
     @Test
